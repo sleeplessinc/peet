@@ -34,9 +34,9 @@ PEET.set_refute_status = function(node) {
 		return rr
 	}
 
-	var o = {};
-	o[node.path] = node;
-	recurse(o);
+	//var o = {};
+	//o[node.path] = node;
+	recurse(node);
 	return node;
 }
 
