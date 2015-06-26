@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git://github.com/sleeplessinc/peet.git"
   },
-  "author": "Joe Hitchens",
+  "author": "Joe Hitchens <joe@sleepless.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/sleeplessinc/peet/issues"
