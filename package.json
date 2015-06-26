@@ -1,0 +1,19 @@
+{
+  "name": "peet",
+  "version": "1.0.0",
+  "description": "Node.js support for working with PEET data",
+  "main": "peet.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sleeplessinc/peet.git"
+  },
+  "author": "Joe Hitchens",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sleeplessinc/peet/issues"
+  },
+  "homepage": "https://github.com/sleeplessinc/peet"
+}
