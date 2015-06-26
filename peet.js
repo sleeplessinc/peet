@@ -2,7 +2,7 @@
 PEET = {
 }
 
-PEET.build_refute_strings = function(node) {
+PEET.set_refute_status = function(node) {
 	// recursively massage the node objects
 	var recurse = function(nodes) {
 		var rr = []
@@ -39,5 +39,23 @@ PEET.build_refute_strings = function(node) {
 	recurse(o);
 	return node;
 }
+
+
+if((typeof process) === 'undefined') {
+	// browser (client)
+
+}
+else {
+	// node (server)
+
+	module.exports = PEET;
+
+	if(require.main === module) {
+		require('./test.js')
+	}
+
+}
+
+
 
 
