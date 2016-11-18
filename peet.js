@@ -1,46 +1,83 @@
 
-PEET = {
-}
+var log = function(s) { console.log(s); };
 
-PEET.set_status = function(node) {
-	// recursively massage the node objects
+PEET = {}
+
+
+/*
+PEET.nuke_deleted = function(nodes) {
 	var recurse = function(nodes) {
-		var rr = []
 		for(var k in nodes) {
 			var node = nodes[k];
 			if(node.deleted != 0) {
+				delete nodes[k];
+				log("nuked node "+k);
 				continue;		// skip
 			}
-
-			var oppose = node.oppose;
-			var ops = recurse(oppose);
-			if(ops.length == 0) {
-				node.status = "Unopposed"
-				node.opposed = 0;
-				rr.push(node.path)
-			}
-			else {
-				node.status = "Opposed: "+ops.join(", ")
-				node.opposed = 1;
-			}
-
-			node.creation_info = "Created "+ts2us(node.created)+" by "+(node.creator || "Someone");
-			node.modification_info = ""
-			if(node.modified) {
-				node.modification_info = "Modified "+ts2us(node.modified)+" by "+node.modifier
-			}
-
-			// abbreviated version of content str
-			node.content_abbr = node.content; //.abbr(60);
+			recurse(node.oppose);
 		}
-		return rr
+	}
+}
+*/
+
+PEET.set_status = function(node) {
+
+	if(node.deleted) { 
+		//log(" root note deleted (ignoring): "+node.path);
+		return;
 	}
 
-	return recurse(node);
-	//return node;
+	node._reds = [];
+	node.opposed = 0;
+	node.status = "Unopposed"
+
+
+	var len = 0;
+	for(var k in node.oppose) {
+		if(!node.oppose[k].deleted) {
+			len += 1;
+		}
+	}
+	//log("node "+node.path+" has "+len+" undeleted sub-nodes");
+
+	if(len == 0) {
+		// a leaf ... oppose up the tree, skipping every other parent after immediate parent
+		//log("  LEAF ");
+		var mom = node._mom;
+		while(mom) {
+			mom._reds.push(node.path);
+			//log("    red flag: "+mom.path);
+			if(!mom._mom || !mom._mom._mom) {
+				break;
+			}
+			mom = mom._mom._mom;
+		}
+	}
+	else {
+		// not a leaf ... recurse
+		//log(" not a leaf "+node.path);
+		for(var k in node.oppose) {
+			var n = node.oppose[k];
+			if(n.deleted) { 
+				//log("   skipping deleted node: "+n.path);
+				continue;
+			}
+			n._mom = node;
+			var o = PEET.set_status(n, node);
+			delete n._mom;
+		}
+	}
+
+	if(node._reds.length > 0) {
+		node.status = "Opposed by "+node._reds.join(", ");
+		node.opposed = 1;
+	}
+
+	delete node._reds;
+
+	//log("  node "+node.path+" is "+node.status);
 }
 
-//PEET.set_refute_status = PEET.set_status;		// deprecated
 
 
 if((typeof process) === 'undefined') {
