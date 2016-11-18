@@ -40,7 +40,7 @@ PEET.set_status = function(node) {
 	return node;
 }
 
-PEET.set_refute_status = Peet.set_status;		// deprecated
+PEET.set_refute_status = PEET.set_status;		// deprecated
 
 
 if((typeof process) === 'undefined') {
