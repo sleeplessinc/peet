@@ -1,6 +1,6 @@
 {
   "name": "peet",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Node.js support for working with PEET data",
   "main": "peet.js",
   "scripts": {
