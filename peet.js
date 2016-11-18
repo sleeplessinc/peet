@@ -2,7 +2,7 @@
 PEET = {
 }
 
-PEET.set_refute_status = function(node) {
+PEET.set_status = function(node) {
 	// recursively massage the node objects
 	var recurse = function(nodes) {
 		var rr = []
@@ -13,13 +13,15 @@ PEET.set_refute_status = function(node) {
 			}
 
 			var oppose = node.oppose;
-			refutes = recurse(oppose);
-			if(refutes.length == 0) {
-				node.status = "Unrefuted"
+			var ops = recurse(oppose);
+			if(ops.length == 0) {
+				node.status = "Unopposed"
+				node.opposed = 0;
 				rr.push(node.path)
 			}
 			else {
-				node.status = "Refuted: "+refutes.join(", ")
+				node.status = "Opposed: "+ops.join(", ")
+				node.opposed = 1;
 			}
 
 			node.creation_info = "Created "+ts2us(node.created)+" by "+(node.creator || "Someone");
@@ -34,11 +36,11 @@ PEET.set_refute_status = function(node) {
 		return rr
 	}
 
-	//var o = {};
-	//o[node.path] = node;
 	recurse(node);
 	return node;
 }
+
+PEET.set_refute_status = Peet.set_status;		// deprecated
 
 
 if((typeof process) === 'undefined') {
