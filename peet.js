@@ -36,8 +36,8 @@ PEET.set_status = function(node) {
 		return rr
 	}
 
-	recurse(node);
-	return node;
+	return recurse(node);
+	//return node;
 }
 
 PEET.set_refute_status = PEET.set_status;		// deprecated
