@@ -1,52 +1,29 @@
 
-var log = function(s) { console.log(s); };
-
 PEET = {}
-
-
-/*
-PEET.nuke_deleted = function(nodes) {
-	var recurse = function(nodes) {
-		for(var k in nodes) {
-			var node = nodes[k];
-			if(node.deleted != 0) {
-				delete nodes[k];
-				log("nuked node "+k);
-				continue;		// skip
-			}
-			recurse(node.oppose);
-		}
-	}
-}
-*/
 
 PEET.set_status = function(node) {
 
 	if(node.deleted) { 
-		//log(" root note deleted (ignoring): "+node.path);
-		return;
+		return;		// ignore node if it's deleted
 	}
 
-	node._reds = [];
+	node._reds = [];		// temp var, deleted before returning
 	node.opposed = 0;
-	node.status = "Unopposed"
+	node.status = "Unopposed";
 
-
+	// count how many undeleted child nodes are in current node
 	var len = 0;
 	for(var k in node.oppose) {
 		if(!node.oppose[k].deleted) {
 			len += 1;
 		}
 	}
-	//log("node "+node.path+" has "+len+" undeleted sub-nodes");
 
 	if(len == 0) {
-		// a leaf ... oppose up the tree, skipping every other parent after immediate parent
-		//log("  LEAF ");
+		// leaf node; oppose up the tree, skipping every other parent after immediate parent
 		var mom = node._mom;
 		while(mom) {
 			mom._reds.push(node.path);
-			//log("    red flag: "+mom.path);
 			if(!mom._mom || !mom._mom._mom) {
 				break;
 			}
@@ -54,16 +31,15 @@ PEET.set_status = function(node) {
 		}
 	}
 	else {
-		// not a leaf ... recurse
-		//log(" not a leaf "+node.path);
+		// not a leaf
+		// walk through child nodes and recurse on each one
 		for(var k in node.oppose) {
 			var n = node.oppose[k];
 			if(n.deleted) { 
-				//log("   skipping deleted node: "+n.path);
-				continue;
+				continue;		// ignore deleted nodes
 			}
-			n._mom = node;
-			var o = PEET.set_status(n, node);
+			n._mom = node;		// temp var; deleted after recurse call
+			var o = PEET.set_status(n, node);	// recurse
 			delete n._mom;
 		}
 	}
@@ -74,25 +50,15 @@ PEET.set_status = function(node) {
 	}
 
 	delete node._reds;
-
-	//log("  node "+node.path+" is "+node.status);
 }
-
 
 
 if((typeof process) === 'undefined') {
 	// browser (client)
-
 }
 else {
 	// node (server)
-
 	module.exports = PEET;
-
-	if(require.main === module) {
-		require('./test.js')
-	}
-
 }
 
 
